@@ -57,19 +57,19 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
   - Spec reference: Architecture constraints — all operations scoped to a tenant
   - Test: After `create_all`, a `Tenant` row can be inserted and queried back; inserting a duplicate `name` raises an `IntegrityError`
 
-- [ ] **TASK-006** — Work model
+- [x] **TASK-006** — Work model
   - Description: Define a `Work` SQLAlchemy model in `app/models/work.py` with fields: `id` (UUID PK), `tenant_id` (UUID FK → Tenant, not null), `ol_work_key` (string, not null), `title` (string), `author_names` (JSON), `first_publish_year` (int, nullable), `subjects` (JSON), `cover_image_url` (string, nullable), `ingested_at` (datetime). Add a unique constraint on `(tenant_id, ol_work_key)`.
   - Depends on: TASK-005
   - Spec reference: Tier 1 — Ingest & Store (stored fields)
   - Test: After `create_all`, a Work row round-trips all fields including JSON; inserting a duplicate `(tenant_id, ol_work_key)` raises `IntegrityError`
 
-- [ ] **TASK-007** — IngestionLog model
+- [x] **TASK-007** — IngestionLog model
   - Description: Define an `IngestionLog` SQLAlchemy model in `app/models/ingestion_log.py` with fields: `id` (UUID PK), `tenant_id` (UUID FK → Tenant), `query_type` (string: `"author"` or `"subject"`), `query_value` (string), `status` (string: `pending`/`running`/`completed`/`failed`), `fetched_count` (int, default 0), `succeeded_count` (int, default 0), `failed_count` (int, default 0), `error_details` (text, nullable), `started_at` (datetime), `finished_at` (datetime, nullable).
   - Depends on: TASK-005
   - Spec reference: Tier 1 — Activity Log
   - Test: After `create_all`, all fields round-trip; a log row can be updated from `pending` to `completed` with `finished_at` set
 
-- [ ] **TASK-008** — ReadingList and ReadingListItem models
+- [x] **TASK-008** — ReadingList and ReadingListItem models
   - Description: Define `ReadingList` (`id`, `tenant_id` FK → Tenant, `patron_name_hash` string, `patron_email_hash` string, `submitted_at` datetime) and `ReadingListItem` (`id`, `reading_list_id` FK → ReadingList, `book_reference` string, `resolved_work_id` UUID FK → Work nullable, `resolution_status` string: `resolved`/`unresolved`) in `app/models/reading_list.py`. Add a unique constraint on `(tenant_id, patron_email_hash)` on `ReadingList`.
   - Depends on: TASK-006
   - Spec reference: Tier 2 — PII Handling (store hashes only; deduplicate by patron)

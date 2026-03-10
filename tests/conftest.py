@@ -12,7 +12,10 @@ from app.main import app
 @pytest.fixture(scope="function")
 def test_engine():
     """In-memory SQLite engine with all tables created."""
-    import app.models.tenant  # noqa: F401 — registers models with Base
+    import app.models.tenant  # noqa: F401
+    import app.models.work  # noqa: F401
+    import app.models.ingestion_log  # noqa: F401
+    import app.models.reading_list  # noqa: F401
 
     engine = create_engine(
         "sqlite://",

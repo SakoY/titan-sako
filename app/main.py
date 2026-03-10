@@ -4,6 +4,9 @@ from fastapi import FastAPI
 
 from app.core.database import init_db
 import app.models.tenant  # noqa: F401 — registers Tenant with Base.metadata
+import app.models.work  # noqa: F401 — registers Work with Base.metadata
+import app.models.ingestion_log  # noqa: F401 — registers IngestionLog with Base.metadata
+import app.models.reading_list  # noqa: F401 — registers ReadingList/ReadingListItem with Base.metadata
 
 
 @asynccontextmanager
