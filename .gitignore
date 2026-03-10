@@ -1,0 +1,68 @@
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Dependency directories (common across ecosystems)
+node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
+*.pyc
+target/
+dist/
+build/
+out/
+bin/
+obj/
+
+# Logs
+*.log
+logs/
+
+# Test output and coverage
+coverage/
+.coverage
+*.lcov
+test-results/
+junit.xml
+
+# Generated / compiled output
+*.class
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Package manager locks (uncomment to ignore — not recommended for most projects)
+# package-lock.json
+# yarn.lock
+# Gemfile.lock
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+*.bak
+*.orig
