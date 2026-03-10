@@ -11,15 +11,20 @@ from app.main import app
 
 @pytest.fixture(scope="function")
 def test_engine():
-    """In-memory SQLite engine with all tables created."""
+    """In-memory SQLite engine with all tables created.
+
+    Uses a named shared-cache URI so that all connections within the same
+    process share the same in-memory database (avoids "no such table" when
+    multiple sessions connect to `sqlite://`).
+    """
     import app.models.tenant  # noqa: F401
     import app.models.work  # noqa: F401
     import app.models.ingestion_log  # noqa: F401
     import app.models.reading_list  # noqa: F401
 
     engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
+        "sqlite:///file::memory:?cache=shared&uri=true",
+        connect_args={"check_same_thread": False, "uri": True},
     )
     Base.metadata.create_all(bind=engine)
     yield engine

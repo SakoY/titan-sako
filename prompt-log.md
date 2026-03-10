@@ -205,3 +205,22 @@ please review our tasks ensure all good so far and we are using correct open lib
 
 ok continue tasks
 
+## 2026-03-10 18:42:17
+
+continue to next tasks
+
+## 2026-03-10 18:49:42
+
+we have # Database (defaults to local SQLite)
+DATABASE_URL=sqlite:///./data/catalog.db
+catalog.db should be persisted
+
+## 2026-03-10 18:50:32
+
+we are getting hung at 
+tests/integration/test_tenants.py::test_ingest_endpoint_accepts_valid_api_key
+
+## 2026-03-10 18:52:19
+
+continue
+

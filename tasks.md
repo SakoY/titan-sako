@@ -141,19 +141,19 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > Tenants can authenticate and trigger catalog ingestion non-blocking via BackgroundTasks.
 
-- [ ] **TASK-017** — Tenant authentication dependency
+- [x] **TASK-017** — Tenant authentication dependency
   - Description: Implement a FastAPI dependency `require_tenant(x_api_key: str = Header(...), db: Session = Depends(get_db)) -> Tenant` in `app/api/deps.py`. Look up the Tenant by matching a hashed form of `x_api_key` against `Tenant.api_key`. Raise `HTTP 401` if the header is missing or the key doesn't match any tenant.
   - Depends on: TASK-005, TASK-004
   - Spec reference: Architecture constraints — all API operations scoped to a specific tenant
   - Test: Request without header → 401; invalid key → 401; valid key → injects correct `Tenant` object
 
-- [ ] **TASK-018** — Tenant management endpoints (admin)
+- [x] **TASK-018** — Tenant management endpoints (admin)
   - Description: Add `POST /api/v1/admin/tenants` (no auth required for bootstrapping) that creates a new Tenant, generates a random API key, stores its hash, and returns the plaintext key once. Add `GET /api/v1/admin/tenants` listing all tenants (id, name, created_at — no keys).
   - Depends on: TASK-017
   - Spec reference: Architecture constraints — multi-tenant setup
   - Test: POST creates a tenant and returns a plaintext key; the DB stores only the hashed form; a second POST with the same name returns 409
 
-- [ ] **TASK-019** — Async ingestion trigger endpoint
+- [x] **TASK-019** — Async ingestion trigger endpoint
   - Description: Add `POST /api/v1/ingest` (tenant-scoped via `require_tenant`) accepting `{"query_type": "author"|"subject", "query_value": string}`. Create an `IngestionLog` row with `status=pending`, then dispatch `run_ingestion` via FastAPI `BackgroundTasks`. Return `202 Accepted` with the `log_id` immediately — do not wait for ingestion to finish.
   - Depends on: TASK-016, TASK-017
   - Spec reference: Tier 2 — Background Processing (must not block API responses)
@@ -165,25 +165,25 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > Patrons and staff can list, filter, search, and inspect stored books for their tenant.
 
-- [ ] **TASK-020** — Work list endpoint with pagination
+- [x] **TASK-020** — Work list endpoint with pagination
   - Description: Add `GET /api/v1/works` (tenant-scoped) returning a paginated list of Works for the tenant. Response shape: `{"items": [...], "total": int, "page": int, "page_size": int}`. Accept `page` (default 1) and `page_size` (default 20, max 100) query params. Each item includes: `id`, `title`, `author_names`, `first_publish_year`, `subjects`, `cover_image_url`.
   - Depends on: TASK-017, TASK-006
   - Spec reference: Tier 1 — Retrieval API (list all stored books with pagination)
   - Test: After ingesting 25 works, `page=1&page_size=20` returns 20 items and `total=25`; `page=2` returns 5 items; `page_size=101` returns 422
 
-- [ ] **TASK-021** — Work filter query params
+- [x] **TASK-021** — Work filter query params
   - Description: Extend `GET /api/v1/works` to accept optional filter params: `author` (case-insensitive substring match against `author_names` JSON), `subject` (case-insensitive substring match against `subjects` JSON), `year_from` (int), `year_to` (int). Active filters are AND-combined.
   - Depends on: TASK-020
   - Spec reference: Tier 1 — Retrieval API (filter by author, subject, or publish year range)
   - Test: Filter by `author` returns only matching rows; combined `author` + `year_from` excludes out-of-range works; a tenant cannot see another tenant's works even if they match the filter
 
-- [ ] **TASK-022** — Keyword search endpoint
+- [x] **TASK-022** — Keyword search endpoint
   - Description: Add `GET /api/v1/works/search?q=<keyword>` (tenant-scoped) performing a case-insensitive search across `title` and `author_names`. Return paginated results in the same shape as the list endpoint. The `q` parameter is required; return 422 if absent.
   - Depends on: TASK-020
   - Spec reference: Tier 1 — Retrieval API (search stored books by keyword — title or author)
   - Test: Search for a known substring of an ingested title returns that work; a search with no matches returns `{"items": [], "total": 0, ...}`; results never include works from a different tenant
 
-- [ ] **TASK-023** — Single work detail endpoint
+- [x] **TASK-023** — Single work detail endpoint
   - Description: Add `GET /api/v1/works/{work_id}` (tenant-scoped) returning all stored fields for the work. Return 404 if the work does not exist or belongs to a different tenant.
   - Depends on: TASK-020
   - Spec reference: Tier 1 — Retrieval API (get a single book's full detail)
@@ -195,19 +195,19 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > Every ingestion operation is logged and queryable via API.
 
-- [ ] **TASK-024** — IngestionLog repository functions
+- [x] **TASK-024** — IngestionLog repository functions
   - Description: Implement `app/repositories/log_repo.py` with: `create_log(db, tenant_id, query_type, query_value) -> IngestionLog` (creates a `pending` row) and `update_log(db, log_id, **fields)` (updates any combination of `status`, `fetched_count`, `succeeded_count`, `failed_count`, `error_details`, `finished_at`).
   - Depends on: TASK-007
   - Spec reference: Tier 1 — Activity Log (record every ingestion operation)
   - Test: `create_log` returns a row with `status="pending"` and `finished_at=None`; `update_log` with `status="completed"` persists correctly
 
-- [ ] **TASK-025** — Ingestion log list endpoint
+- [x] **TASK-025** — Ingestion log list endpoint
   - Description: Add `GET /api/v1/ingestion-logs` (tenant-scoped) returning a paginated list of `IngestionLog` rows for the tenant, ordered by `started_at` descending. Include all log fields in the response.
   - Depends on: TASK-024, TASK-017
   - Spec reference: Tier 1 — Activity Log (expose log via API)
   - Test: After two ingestion runs, GET returns exactly two logs for that tenant in descending time order; a different tenant's logs are not included
 
-- [ ] **TASK-026** — Ingestion log detail and status endpoint
+- [x] **TASK-026** — Ingestion log detail and status endpoint
   - Description: Add `GET /api/v1/ingestion-logs/{log_id}` (tenant-scoped) returning full detail of a single log including `error_details`. Returns 404 if not found or belongs to another tenant. This endpoint is poll-friendly for checking background task progress.
   - Depends on: TASK-025
   - Spec reference: Tier 1 — Activity Log; Tier 2 — Background Processing (visibility into progress)
