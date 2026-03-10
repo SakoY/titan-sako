@@ -189,3 +189,19 @@ now lets continue our tasks
 
 please create our test cases for our new tasks and rerun all tests
 
+## 2026-03-10 18:25:04
+
+lets continue our tasks
+
+## 2026-03-10 18:27:02
+
+before marking as complete ensure all calls are working and we are defining the schema returned from open library api
+
+## 2026-03-10 18:37:01
+
+please review our tasks ensure all good so far and we are using correct open library endpoint
+
+## 2026-03-10 18:37:39
+
+ok continue tasks
+

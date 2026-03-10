@@ -81,31 +81,31 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > `OLClient` can fetch from the live Open Library API with retry and rate-limit handling.
 
-- [ ] **TASK-009** — Base HTTP client with retry and rate-limit handling
+- [x] **TASK-009** — Base HTTP client with retry and rate-limit handling
   - Description: Implement `app/services/ol_client.py` with an `OLClient` class wrapping `httpx.AsyncClient`. Configure: base URL from settings, an `asyncio.Semaphore` limiting concurrent requests to `OL_MAX_CONCURRENT_REQUESTS`, and exponential backoff retries (max 3) on `429` and `5xx` responses. Define custom exceptions: `OLNotFoundError`, `OLRateLimitError`, `OLClientError`.
   - Depends on: TASK-003
   - Spec reference: Tier 2 — Background Processing (handle OL rate limits gracefully)
   - Test: Unit tests using `httpx.MockTransport` verify: a `429` triggers retry; a `404` raises `OLNotFoundError`; concurrent requests beyond the semaphore limit are queued
 
-- [ ] **TASK-010** — Author search integration
+- [x] **TASK-010** — Author search integration
   - Description: Implement `OLClient.search_works_by_author(author: str, limit: int, offset: int) -> list[dict]` calling `/search.json?author=...&limit=...&offset=...`. Parse and return only the fields needed: `key`, `title`, `author_key` (list), `first_publish_year`, `subject` (list), `cover_i` (int or None).
   - Depends on: TASK-009
   - Spec reference: Tier 1 — Ingest & Store (fetch works by author name)
   - Test: Integration test against live OL with a well-known author returns ≥1 result with a non-null `key`; missing optional fields default to `None` or `[]` without raising
 
-- [ ] **TASK-011** — Subject search integration
+- [x] **TASK-011** — Subject search integration
   - Description: Implement `OLClient.search_works_by_subject(subject: str, limit: int, offset: int) -> list[dict]` calling `/search.json?subject=...`. Return the same field shape as `search_works_by_author`.
   - Depends on: TASK-009
   - Spec reference: Tier 1 — Ingest & Store (fetch works by subject)
   - Test: Integration test with a well-known subject returns ≥1 result; same field parsing contract as TASK-010
 
-- [ ] **TASK-012** — Author detail resolution integration
+- [x] **TASK-012** — Author detail resolution integration
   - Description: Implement `OLClient.get_author(author_key: str) -> dict` fetching `/authors/{key}.json`. Return a dict with at minimum `name` (string). Handle missing or malformed `name` field by returning `{"name": "Unknown"}`. Raise `OLNotFoundError` on 404.
   - Depends on: TASK-009
   - Spec reference: Tier 1 — Ingest & Store (resolve author info via follow-up requests)
   - Test: Integration test with a known author key returns a non-empty `name`; a fabricated key raises `OLNotFoundError`
 
-- [ ] **TASK-013** — Cover image URL construction utility
+- [x] **TASK-013** — Cover image URL construction utility
   - Description: Implement a pure function `build_cover_url(cover_id: int | None) -> str | None` in `app/services/ol_client.py` that converts an Open Library `cover_i` integer to the covers CDN URL (`https://covers.openlibrary.org/b/id/{cover_id}-M.jpg`). Returns `None` if `cover_id` is `None`.
   - Depends on: TASK-009
   - Spec reference: Tier 1 — Ingest & Store (cover image URL if available)
@@ -117,19 +117,19 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > Core ingestion functions work correctly with mocked OL responses.
 
-- [ ] **TASK-014** — Work upsert repository function
+- [x] **TASK-014** — Work upsert repository function
   - Description: Implement `app/repositories/work_repo.py` with `upsert_work(db, tenant_id, work_data: dict) -> Work` that inserts a new `Work` row or updates an existing one matched on `(tenant_id, ol_work_key)`. Set `ingested_at` to the current UTC time on every upsert.
   - Depends on: TASK-006
   - Spec reference: Tier 1 — Ingest & Store (store locally)
   - Test: Calling `upsert_work` twice with the same `ol_work_key` results in exactly one DB row; the second call updates `title` if it changed
 
-- [ ] **TASK-015** — Single-work ingestion pipeline
+- [x] **TASK-015** — Single-work ingestion pipeline
   - Description: Implement `app/services/ingestion.py` with `ingest_single_work(db, ol_client, tenant_id, raw_work: dict) -> dict` that: resolves author names via `OLClient.get_author` for any `author_key` values in the raw work dict, builds a cover URL, assembles the full work dict, and calls `upsert_work`. Returns `{"status": "success", "ol_work_key": ...}` or `{"status": "failed", "error": ...}`.
   - Depends on: TASK-013, TASK-014
   - Spec reference: Tier 1 — Ingest & Store (follow-up requests for missing fields)
   - Test: With a mocked `OLClient`, author keys trigger `get_author` calls; the resulting `Work` row has a populated `author_names` list; an `OLClientError` during author resolution returns status `"failed"`
 
-- [ ] **TASK-016** — Batch ingestion orchestrator
+- [x] **TASK-016** — Batch ingestion orchestrator
   - Description: Implement `run_ingestion(db, ol_client, tenant_id, query_type, query_value, log_id)` in `app/services/ingestion.py`. Paginate through OL search results (page size 50, stop when results are exhausted or 500 works reached), call `ingest_single_work` for each, and update the `IngestionLog` row after each page with running counts. Mark the log `completed` or `failed` on exit.
   - Depends on: TASK-015, TASK-007
   - Spec reference: Tier 1 — Ingest & Store, Activity Log
