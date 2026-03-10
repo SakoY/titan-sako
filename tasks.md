@@ -219,25 +219,25 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > Patrons can submit reading lists; PII is hashed before storage and never exposed in responses.
 
-- [ ] **TASK-027** — PII hashing utility
+- [x] **TASK-027** — PII hashing utility
   - Description: Implement `hash_pii(value: str, secret_key: str) -> str` in `app/core/security.py` using HMAC-SHA256 keyed with `SECRET_KEY` from settings. The function must be deterministic (same input + key → same output) and irreversible.
   - Depends on: TASK-003
   - Spec reference: Tier 2 — PII Handling (hash name and email before storing)
   - Test: Same input + key always returns the same output; different inputs return different outputs; the output contains no recognizable substring of the original; changing the key changes the output
 
-- [ ] **TASK-028** — Book reference resolver
+- [x] **TASK-028** — Book reference resolver
   - Description: Implement `resolve_book_references(db, tenant_id, references: list[str]) -> dict[str, Work | None]` in `app/services/reading_list.py`. Given OL work IDs or ISBNs, look up each against locally stored `Work` rows for the tenant. Returns a mapping of reference → `Work` or `None` if not found. References matching another tenant's works resolve to `None`.
   - Depends on: TASK-006
   - Spec reference: Tier 2 — PII Handling (response confirms which books resolved)
   - Test: Known Work rows resolve to Work objects; unknown references map to `None`; a reference matching a different tenant's work returns `None`
 
-- [ ] **TASK-029** — Reading list submission endpoint
+- [x] **TASK-029** — Reading list submission endpoint
   - Description: Add `POST /api/v1/reading-lists` (tenant-scoped) accepting `{"patron_name": str, "patron_email": str, "books": [str]}`. Hash name and email with `hash_pii` before storing. If a `ReadingList` with the same `(tenant_id, patron_email_hash)` already exists, upsert rather than duplicate. Store `ReadingListItem` rows with resolution status from `resolve_book_references`. Return `{"reading_list_id": ..., "resolved": [...], "unresolved": [...]}`.
   - Depends on: TASK-027, TASK-028, TASK-008
   - Spec reference: Tier 2 — PII Handling (submit reading lists; deduplicate; confirm resolution)
   - Test: Submitting the same patron email twice results in one `ReadingList` DB row; the DB contains no plaintext name or email anywhere; response lists resolved and unresolved books; another tenant cannot see this reading list
 
-- [ ] **TASK-030** — Reading list retrieval endpoints
+- [x] **TASK-030** — Reading list retrieval endpoints
   - Description: Add `GET /api/v1/reading-lists` (tenant-scoped) returning paginated `ReadingList` rows (id, patron_name_hash, patron_email_hash, submitted_at, item_count). Add `GET /api/v1/reading-lists/{id}` returning the list with all `ReadingListItem` rows and their resolution status.
   - Depends on: TASK-029
   - Spec reference: Tier 2 — PII Handling
@@ -249,43 +249,43 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > Service is fully tested, has a health endpoint, and is documented for local setup.
 
-- [ ] **TASK-031** — Test infrastructure: fixtures and test database
+- [x] **TASK-031** — Test infrastructure: fixtures and test database
   - Description: Set up pytest with a shared `conftest.py` in `tests/`. Create fixtures for: an in-memory SQLite test DB with all tables created (`test_db`), a `TestClient` wrapping the FastAPI app with the test DB injected, a default `Tenant` fixture with a known API key, and `Work` factory helpers that insert test rows.
   - Depends on: TASK-017
   - Spec reference: All tiers — foundational test infrastructure
   - Test: Running `pytest tests/` on an empty test suite exits 0; all fixtures initialize without error
 
-- [ ] **TASK-032** — Unit tests: OLClient
+- [x] **TASK-032** — Unit tests: OLClient
   - Description: Write unit tests in `tests/unit/test_ol_client.py` using `httpx.MockTransport` covering: successful author search response parsing, successful subject search response parsing, author detail resolution (including missing name fallback), cover URL construction, 429 retry behavior, and 404 → `OLNotFoundError` mapping.
   - Depends on: TASK-031, TASK-013
   - Spec reference: Tier 1 — Ingest & Store; Tier 2 — rate limit handling
   - Test: All tests pass with zero live network calls; the retry path is exercised at least once
 
-- [ ] **TASK-033** — Unit tests: ingestion pipeline
+- [x] **TASK-033** — Unit tests: ingestion pipeline
   - Description: Write unit tests in `tests/unit/test_ingestion.py` for `ingest_single_work` and `run_ingestion` with mocked `OLClient` and the test DB. Cover: successful multi-author resolution, partial failure (one work's author lookup raises `OLClientError`), two-page pagination, and `IngestionLog` count accuracy.
   - Depends on: TASK-031, TASK-016
   - Spec reference: Tier 1 — Ingest & Store, Activity Log
   - Test: Log counts exactly match the number of successes and failures injected; pagination stops when results are exhausted
 
-- [ ] **TASK-034** — Integration tests: Retrieval API
+- [x] **TASK-034** — Integration tests: Retrieval API
   - Description: Write integration tests in `tests/integration/test_retrieval.py` using `TestClient` + test DB. Cover: pagination boundary conditions, all filter combinations, keyword search with mixed case, single-work 404 on wrong tenant.
   - Depends on: TASK-031, TASK-023
   - Spec reference: Tier 1 — Retrieval API
   - Test: A test explicitly asserts tenant A cannot retrieve tenant B's works via any retrieval endpoint; all filter and pagination tests pass
 
-- [ ] **TASK-035** — Integration tests: PII and reading lists
+- [x] **TASK-035** — Integration tests: PII and reading lists
   - Description: Write integration tests in `tests/integration/test_reading_lists.py` for `POST /api/v1/reading-lists` and retrieval endpoints. Cover: deduplication on repeated patron email submission, resolution report accuracy, absence of plaintext PII in all API responses, and tenant isolation.
   - Depends on: TASK-031, TASK-030
   - Spec reference: Tier 2 — PII Handling
   - Test: A DB-level assertion confirms no stored column contains the raw patron email string; all PII tests pass
 
-- [ ] **TASK-036** — Health check endpoint
+- [x] **TASK-036** — Health check endpoint
   - Description: Add `GET /health` returning `{"status": "ok"}` with HTTP 200. No auth required and no DB access — pure liveness check used by Docker Compose.
   - Depends on: TASK-002
   - Spec reference: Deliverables — service is runnable and testable locally
   - Test: `/health` returns 200 before the DB is initialized; Docker Compose `healthcheck` passes within 10 seconds of startup
 
-- [ ] **TASK-037** — README and API documentation
+- [x] **TASK-037** — README and API documentation
   - Description: Write `README.md` with: ASCII architecture diagram (API → BackgroundTasks → SQLite, API → Open Library); key design decisions (tenant isolation, PII hashing, BackgroundTasks trade-offs); setup and run instructions (`make run` + `.env.example`); curl-based reference for every endpoint; and a "What I would do differently" section.
   - Depends on: TASK-036
   - Spec reference: Deliverables — README.md

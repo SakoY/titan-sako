@@ -1,0 +1,20 @@
+meta {
+  name: List Works
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/works
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+query {
+  page: 1
+  page_size: 20
+}

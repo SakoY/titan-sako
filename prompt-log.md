@@ -224,3 +224,388 @@ tests/integration/test_tenants.py::test_ingest_endpoint_accepts_valid_api_key
 
 continue
 
+## 2026-03-10 18:56:01
+
+contunue to next milestone
+
+## 2026-03-10 18:59:46
+
+before we continue insure our specs are properly updated api.md and schema.md
+
+## 2026-03-10 19:03:04
+
+lets continue with milestone 9
+
+## 2026-03-10 19:05:23
+
+where did our arch md go?
+
+## 2026-03-10 19:05:46
+
+lets move that under docs
+
+## 2026-03-10 19:07:16
+
+before implementing task 037 / readme ensure 
+Architecture overview and key design decisions - you can grab this from our arch md and other markdows 
+Setup and run instructions 
+API documentation or examples (curl commands, etc.) - please give full documentation and also create a bruno collection of every call
+What you would do differently with more time - refrence our decisions
+
+## 2026-03-10 19:10:44
+
+architecture overview should be using mermaid diagram please refrence /Users/sako/Developer/titan/prompts/mermaid.md
+
+## 2026-03-10 19:11:37
+
+improve diagram lines cross
+
+## 2026-03-10 19:12:02
+
+still corss
+
+## 2026-03-10 19:13:00
+
+clean up this aspect in the image provided
+
+## 2026-03-10 19:16:29
+
+<task-notification>
+<task-id>btkcynwi2</task-id>
+<tool-use-id>toolu_01PsS8K4S3JihgkQaAmMBCGi</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-sako-Developer-titan/tasks/btkcynwi2.output</output-file>
+<status>completed</status>
+<summary>Background command "Rerun new tests after shared-cache fix" completed (exit code 0)</summary>
+</task-notification>
+Read the output file to retrieve the result: /private/tmp/claude-501/-Users-sako-Developer-titan/tasks/btkcynwi2.output
+
+## 2026-03-10 19:16:32
+
+please create a test that uses the running docker http://0.0.0.0:8000 to go through every single call
+
+## 2026-03-10 19:19:17
+
+origin/master'.
+sako@Sakos-MBP titan % source .venv/bin/activate && pytest tests/e2e/test_docker_e2e.py --collect-only 2>&1 | tail -10
+        <Function test_get_work_by_id>
+        <Function test_get_work_not_found>
+        <Function test_submit_reading_list>
+        <Function test_submit_reading_list_upserts_on_same_email>
+        <Function test_submit_reading_list_no_pii_in_response>
+        <Function test_list_reading_lists>
+        <Function test_get_reading_list>
+        <Function test_get_reading_list_not_found>
+========================= 29 tests collected in 0.09s ==========================
+
+## 2026-03-10 19:22:45
+
+current task is to fix test_docker_e2e
+this should call all endpoints through running localhost istance you can refrence our openapi or bruno collection
+
+## 2026-03-10 19:23:52
+
+it is not stale
+ ⠿ Container titan-api-1  Created                                                                                                                                                                                                                                              0.0s
+Attaching to titan-api-1
+titan-api-1  | INFO:     Started server process [1]
+titan-api-1  | INFO:     Waiting for application startup.
+titan-api-1  | INFO:     Application startup complete.
+titan-api-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+titan-api-1  | INFO:     172.22.0.1:37576 - "GET /api/v1/admin/tenants HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.22.0.1:59600 - "GET /api/v1/admin/tenants HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.22.0.1:59600 - "GET /api/v1/admin/tenants HTTP/1.1" 200 OK
+
+## 2026-03-10 19:26:54
+
+curl -X 'POST' \
+  'http://localhost:8000/api/v1/ingest' \
+  -H 'accept: application/json' \
+  -H 'X-API-Key: Cs-PMnoo-NQHF1HAgNNmiXTi6pIIAbtneT_4-v303Ps' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "query_type": "string",
+  "query_value": "string"
+}'
+just need a 
+{
+  "query_type": "string",
+  "query_value": "string"
+}
+
+## 2026-03-10 19:27:25
+
+http://localhost:8000/docs#/ingestion/trigger_ingestion_api_v1_ingest_post
+
+## 2026-03-10 19:29:03
+
+its running now try again
+
+## 2026-03-10 19:30:08
+
+uthorized
+titan-api-1  | INFO:     172.23.0.1:47604 - "POST /api/v1/ingest HTTP/1.1" 202 Accepted
+titan-api-1  | INFO:     172.23.0.1:47610 - "POST /api/v1/ingest HTTP/1.1" 202 Accepted
+titan-api-1  | INFO:     172.23.0.1:47616 - "POST /api/v1/ingest HTTP/1.1" 422 Unprocessable Entity
+titan-api-1  | INFO:     172.23.0.1:47630 - "POST /api/v1/ingest HTTP/1.1" 202 Accepted
+titan-api-1  | INFO:     172.23.0.1:47644 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:47650 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:58834 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:58836 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:58846 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:57726 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:57740 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:57748 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:57760 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:34114 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:34130 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:34136 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:59466 - "GET /api/v1/ingestion-logs/ab6c7180-9094-4d30-89cf-08cbd485d523 HTTP/1.1" 200 OK
+believe injestion is stuck
+
+## 2026-03-10 19:31:25
+
+kill it for me
+
+## 2026-03-10 19:32:16
+
+titan-api-1  | INFO:     172.23.0.1:54704 - "POST /api/v1/ingest HTTP/1.1" 202 Accepted
+titan-api-1  | INFO:     172.23.0.1:54718 - "POST /api/v1/ingest HTTP/1.1" 422 Unprocessable Entity
+titan-api-1  | INFO:     172.23.0.1:54726 - "POST /api/v1/ingest HTTP/1.1" 202 Accepted
+titan-api-1  | INFO:     172.23.0.1:54738 - "GET /api/v1/ingestion-logs/341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:47526 - "GET /api/v1/ingestion-logs/341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:47542 - "GET /api/v1/ingestion-logs/341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d HTTP/1.1" 200 OK
+titan-api-1  | INFO:     172.23.0.1:47552 - "GET /api/v1/ingestion-logs/341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d HTTP/1.1" 200 OK
+ingestion still polling ensure endpoing is correct for open library
+
+## 2026-03-10 19:33:23
+
+is it injesting?
+
+## 2026-03-10 19:34:19
+
+== 2 failed, 2 passed, 25 skipped in 0.19s ====================
+(.venv) sako@Sakos-MBP titan % .venv/bin/pytest tests/e2e/test_docker_e2e.py -v --tb=short 2>&1
+=============================================================================================================================== test session starts ================================================================================================================================
+platform darwin -- Python 3.14.3, pytest-9.0.2, pluggy-1.6.0 -- /Users/sako/Developer/titan/.venv/bin/python3.14
+cachedir: .pytest_cache
+rootdir: /Users/sako/Developer/titan
+configfile: pyproject.toml
+plugins: anyio-4.12.1, asyncio-1.3.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 29 items                                                                                                                                                                                                                                                                 
+tests/e2e/test_docker_e2e.py::test_health PASSED                                                                                                                                                                                                                             [  3%]
+tests/e2e/test_docker_e2e.py::test_create_tenant_returns_201 PASSED                                                                                                                                                                                                          [  6%]
+tests/e2e/test_docker_e2e.py::test_create_tenant_duplicate_returns_409 PASSED                                                                                                                                                                                                [ 10%]
+tests/e2e/test_docker_e2e.py::test_list_tenants PASSED                                                                                                                                                                                                                       [ 13%]
+tests/e2e/test_docker_e2e.py::test_list_tenants_does_not_expose_api_keys PASSED                                                                                                                                                                                              [ 17%]
+tests/e2e/test_docker_e2e.py::test_ingest_rejects_missing_key PASSED                                                                                                                                                                                                         [ 20%]
+tests/e2e/test_docker_e2e.py::test_ingest_rejects_wrong_key PASSED                                                                                                                                                                                                           [ 24%]
+tests/e2e/test_docker_e2e.py::test_trigger_ingestion_returns_202 PASSED                                                                                                                                                                                                      [ 27%]
+tests/e2e/test_docker_e2e.py::test_trigger_ingestion_by_subject PASSED                                                                                                                                                                                                       [ 31%]
+tests/e2e/test_docker_e2e.py::test_trigger_ingestion_invalid_query_type PASSED                                                                                                                                                                                               [ 34%]
+tests/e2e/test_docker_e2e.py::test_ingestion_completes ERROR                                                                                                                                                                                                                 [ 37%]
+tests/e2e/test_docker_e2e.py::test_list_ingestion_logs PASSED                                                                                                                                                                                                                [ 41%]
+tests/e2e/test_docker_e2e.py::test_get_ingestion_log ERROR                                                                                                                                                                                                                   [ 44%]
+tests/e2e/test_docker_e2e.py::test_get_ingestion_log_not_found PASSED                                                                                                                                                                                                        [ 48%]
+tests/e2e/test_docker_e2e.py::test_list_works_returns_results ERROR                                                                                                                                                                                                          [ 51%]
+tests/e2e/test_docker_e2e.py::test_list_works_pagination ERROR                                                                                                                                                                                                               [ 55%]
+tests/e2e/test_docker_e2e.py::test_list_works_page_size_over_100_rejected PASSED                                                                                                                                                                                             [ 58%]
+tests/e2e/test_docker_e2e.py::test_filter_works_by_author ERROR                                                                                                                                                                                                              [ 62%]
+tests/e2e/test_docker_e2e.py::test_filter_works_by_year_range ERROR                                                                                                                                                                                                          [ 65%]
+tests/e2e/test_docker_e2e.py::test_search_works_by_keyword ERROR                                                                                                                                                                                                             [ 68%]
+tests/e2e/test_docker_e2e.py::test_search_works_missing_q_returns_422 PASSED                                                                                                                                                                                                 [ 72%]
+tests/e2e/test_docker_e2e.py::test_get_work_by_id ERROR                                                                                                                                                                                                                      [ 75%]
+tests/e2e/test_docker_e2e.py::test_get_work_not_found PASSED                                                                                                                                                                                                                 [ 79%]
+tests/e2e/test_docker_e2e.py::test_submit_reading_list_resolves_known_work ERROR                                                                                                                                                                                             [ 82%]
+tests/e2e/test_docker_e2e.py::test_submit_reading_list_upserts_on_same_email ERROR                                                                                                                                                                                           [ 86%]
+tests/e2e/test_docker_e2e.py::test_submit_reading_list_no_pii_in_response PASSED                                                                                                                                                                                             [ 89%]
+tests/e2e/test_docker_e2e.py::test_list_reading_lists ERROR                                                                                                                                                                                                                  [ 93%]
+tests/e2e/test_docker_e2e.py::test_get_reading_list ERROR                                                                                                                                                                                                                    [ 96%]
+tests/e2e/test_docker_e2e.py::test_get_reading_list_not_found PASSED                                                                                                                                                                                                         [100%]
+====================================================================================================================================== ERRORS ======================================================================================================================================
+____________________________________________________________________________________________________________________ ERROR at setup of test_ingestion_completes ____________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+_____________________________________________________________________________________________________________________ ERROR at setup of test_get_ingestion_log _____________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+________________________________________________________________________________________________________________ ERROR at setup of test_list_works_returns_results _________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+___________________________________________________________________________________________________________________ ERROR at setup of test_list_works_pagination ___________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+__________________________________________________________________________________________________________________ ERROR at setup of test_filter_works_by_author ___________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+________________________________________________________________________________________________________________ ERROR at setup of test_filter_works_by_year_range _________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+__________________________________________________________________________________________________________________ ERROR at setup of test_search_works_by_keyword __________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+______________________________________________________________________________________________________________________ ERROR at setup of test_get_work_by_id _______________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+__________________________________________________________________________________________________________ ERROR at setup of test_submit_reading_list_resolves_known_work __________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+_________________________________________________________________________________________________________ ERROR at setup of test_submit_reading_list_upserts_on_same_email _________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+____________________________________________________________________________________________________________________ ERROR at setup of test_list_reading_lists _____________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+_____________________________________________________________________________________________________________________ ERROR at setup of test_get_reading_list ______________________________________________________________________________________________________________________
+tests/e2e/test_docker_e2e.py:81: in ingested_log_id
+    assert r.json()["status"] == "completed", f"Ingestion did not complete: {r.json()}"
+E   AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count': 0, 'error_details': None, 'started_at': '2026-03-10T23:31:44.715004', 'finished_at': None}
+E   assert 'running' == 'completed'
+E     
+E     - completed
+E     + running
+============================================================================================================================= short test summary info ==============================================================================================================================
+ERROR tests/e2e/test_docker_e2e.py::test_ingestion_completes - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_get_ingestion_log - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_list_works_returns_results - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_list_works_pagination - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_filter_works_by_author - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_filter_works_by_year_range - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_search_works_by_keyword - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_get_work_by_id - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_submit_reading_list_resolves_known_work - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_submit_reading_list_upserts_on_same_email - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_list_reading_lists - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+ERROR tests/e2e/test_docker_e2e.py::test_get_reading_list - AssertionError: Ingestion did not complete: {'id': '341ca7b7-5b9a-4efb-ae0d-f2f314e0c44d', 'tenant_id': 'bf184d00-3b7f-44ef-81d6-665aec1904ee', 'query_type': 'author', 'query_value': 'tolkien', 'status': 'running', 'fetched_count': 0, 'succeeded_count': 0, 'failed_count'...
+==================================================================================================================== 17 passed, 12 errors in 124.12s (0:02:04) =====================================================================================================================
+(.venv) sako@Sakos-MBP titan %
+
+## 2026-03-10 19:35:34
+
+ensure we dont have conflicting ports i composed down and up again
+
+## 2026-03-10 19:36:15
+
+how long does injestion run for ? do we see any books coming through?
+
+## 2026-03-10 19:36:44
+
+test is currently running
+
+## 2026-03-10 19:37:36
+
+check ingestion-logs
+
+## 2026-03-10 19:38:16
+
+make the test only injest for 30 sec
+
+## 2026-03-10 19:40:45
+
+we should commit even if its less than 50 what if there are less than 50 works?
+
+## 2026-03-10 19:41:17
+
+not every work but if there ends up being less than 50 it should commit
+
+## 2026-03-10 19:41:30
+
+ok great think we are good then
+
+## 2026-03-10 19:41:40
+
+can you run the rest of the tests
+
+## 2026-03-10 19:42:59
+
+ok i rebuild review the e2e just want to do a short injestion
+
+## 2026-03-10 19:44:43
+
+call open library directly with that author do you see any issues 
+polling still taking a while with our test
+
+## 2026-03-10 19:46:22
+
+well in my test case point is to just see if we are ingesting and the rest of the calls work
+
+## 2026-03-10 19:47:04
+
+were your ingestion changes required then?
+
+## 2026-03-10 19:47:23
+
+ok whats the test to run again
+
+## 2026-03-10 19:47:50
+
+perfect all passed
+
+## 2026-03-10 19:48:45
+
+please review entire readme and repo for our final commit push
+
+## 2026-03-10 19:50:28
+
+please add links to our specs and other docs to the readme where appropriate
+
+## 2026-03-10 19:51:32
+
+/Users/sako/Developer/titan/specs/requirements.md
+please review requirements once more to ensure nothing was missed
+

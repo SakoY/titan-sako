@@ -1,0 +1,21 @@
+meta {
+  name: Search Works
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/works/search
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+query {
+  q: fellowship
+  page: 1
+  page_size: 20
+}

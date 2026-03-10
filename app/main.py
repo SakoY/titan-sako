@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.core.database import init_db
-from app.api.v1 import tenants, ingestion, works, logs
+from app.api.v1 import tenants, ingestion, works, logs, reading_lists
 import app.models.tenant  # noqa: F401 — registers Tenant with Base.metadata
 import app.models.work  # noqa: F401 — registers Work with Base.metadata
 import app.models.ingestion_log  # noqa: F401 — registers IngestionLog with Base.metadata
@@ -22,6 +22,7 @@ app.include_router(tenants.router)
 app.include_router(ingestion.router)
 app.include_router(works.router)
 app.include_router(logs.router)
+app.include_router(reading_lists.router)
 
 
 @app.get("/health")

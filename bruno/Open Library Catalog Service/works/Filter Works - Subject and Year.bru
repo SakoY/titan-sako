@@ -1,0 +1,21 @@
+meta {
+  name: Filter Works - Subject and Year
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/works
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+query {
+  subject: fantasy
+  year_from: 1950
+  year_to: 1980
+}

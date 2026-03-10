@@ -1,0 +1,15 @@
+meta {
+  name: Get Work by ID
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/api/v1/works/{{work_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}

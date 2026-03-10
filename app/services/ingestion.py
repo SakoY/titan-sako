@@ -1,5 +1,6 @@
 """Catalog ingestion pipeline — single-work and batch orchestration."""
 
+import asyncio
 import logging
 from datetime import datetime, timezone
 
@@ -60,20 +61,25 @@ async def ingest_single_work(
 
 
 async def run_ingestion(
-    db: Session,
     ol_client: OLClient,
     tenant_id: str,
     query_type: str,
     query_value: str,
     log_id: str,
+    db: Session | None = None,
 ) -> None:
     """
     Paginate through OL search results and ingest each work.
-    Updates the IngestionLog row after each page. Marks the log
-    completed or failed on exit.
+    Opens its own DB session when called from BackgroundTasks (the request
+    session is closed before the background task runs). Accepts an explicit
+    session for unit tests.
     """
+    from app.core.database import SessionLocal
     from app.models.ingestion_log import IngestionLog
 
+    _own_session = db is None
+    if _own_session:
+        db = SessionLocal()
     log = db.query(IngestionLog).filter_by(id=log_id).one()
     log.status = "running"
     db.commit()
@@ -95,17 +101,20 @@ async def run_ingestion(
             if not works:
                 break
 
-            for raw_work in works:
-                result = await ingest_single_work(db, ol_client, tenant_id, raw_work)
+            # Process all works in the page concurrently
+            results = await asyncio.gather(
+                *[ingest_single_work(db, ol_client, tenant_id, w) for w in works]
+            )
+            for result in results:
+                fetched += 1
                 if result["status"] == "success":
                     succeeded += 1
                 else:
                     failed += 1
 
-            fetched += len(works)
             offset += len(works)
 
-            # Update log after each page
+            # Commit after each page (including partial pages < page_size)
             log.fetched_count = fetched
             log.succeeded_count = succeeded
             log.failed_count = failed
@@ -127,3 +136,5 @@ async def run_ingestion(
         log.failed_count = failed
         log.finished_at = datetime.now(timezone.utc)
         db.commit()
+        if _own_session:
+            db.close()

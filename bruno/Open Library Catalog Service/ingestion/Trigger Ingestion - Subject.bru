@@ -1,0 +1,28 @@
+meta {
+  name: Trigger Ingestion - Subject
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/ingest
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+body:json {
+  {
+    "query_type": "subject",
+    "query_value": "fantasy"
+  }
+}
+
+script:post-response {
+  if (res.status === 202) {
+    bru.setEnvVar("log_id", res.body.log_id);
+  }
+}

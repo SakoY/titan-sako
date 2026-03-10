@@ -1,0 +1,15 @@
+meta {
+  name: Get Reading List
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/reading-lists/{{reading_list_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}

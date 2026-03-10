@@ -1,0 +1,32 @@
+meta {
+  name: Submit Reading List
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/reading-lists
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{api_key}}
+}
+
+body:json {
+  {
+    "patron_name": "Alice Smith",
+    "patron_email": "alice@library.org",
+    "books": [
+      "/works/OL27516W",
+      "/works/OL1234W"
+    ]
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("reading_list_id", res.body.reading_list_id);
+  }
+}

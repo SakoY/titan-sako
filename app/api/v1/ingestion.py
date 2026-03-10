@@ -50,7 +50,6 @@ def trigger_ingestion(
     ol_client = OLClient()
     background_tasks.add_task(
         run_ingestion,
-        db,
         ol_client,
         tenant.id,
         body.query_type,
