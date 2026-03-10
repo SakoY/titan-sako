@@ -33,13 +33,13 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
   - Spec reference: Deliverables — single-command startup (`docker compose up` or `make run`)
   - Test: `docker compose up --build` starts the service; `curl http://localhost:8000/health` returns HTTP 200
 
-- [ ] **TASK-003** — Application configuration and environment loading
+- [x] **TASK-003** — Application configuration and environment loading
   - Description: Implement `app/core/config.py` using pydantic-settings. Settings to load from environment: `DATABASE_URL` (default: `sqlite:///./catalog.db`), `SECRET_KEY` (required), `OL_BASE_URL` (default: `https://openlibrary.org`), `OL_MAX_CONCURRENT_REQUESTS` (default: 5). Provide a `.env.example` listing all variables.
   - Depends on: TASK-001
   - Spec reference: Architecture constraints — configurable deployment
   - Test: Instantiating `Settings()` with a test env returns correctly typed values; missing `SECRET_KEY` raises a `ValidationError`
 
-- [ ] **TASK-004** — Database connection and schema initialization
+- [x] **TASK-004** — Database connection and schema initialization
   - Description: Configure a SQLAlchemy `create_engine` (sync) pointed at `DATABASE_URL`, and a `SessionLocal` factory. Implement a FastAPI lifespan hook that calls `Base.metadata.create_all(engine)` on startup. Add a `get_db` dependency that yields a session and closes it on teardown.
   - Depends on: TASK-003
   - Spec reference: Tier 1 — Ingest & Store (persistent storage)
@@ -51,7 +51,7 @@ Implementation tasks derived from `specs/requirements.md`. Tasks are ordered by 
 
 > All four SQLAlchemy models are defined; `create_all` creates the correct tables on startup.
 
-- [ ] **TASK-005** — Tenant model
+- [x] **TASK-005** — Tenant model
   - Description: Define a `Tenant` SQLAlchemy model in `app/models/tenant.py` with fields: `id` (UUID PK, auto-generated), `name` (string, unique, not null), `api_key` (string, unique — store a hashed value), `created_at` (datetime, auto-set). Register with the shared `Base`.
   - Depends on: TASK-004
   - Spec reference: Architecture constraints — all operations scoped to a tenant

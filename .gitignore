@@ -28,6 +28,7 @@ vendor/
 venv/
 __pycache__/
 *.pyc
+*.egg-info/
 target/
 dist/
 build/
@@ -66,3 +67,7 @@ temp/
 *.tmp
 *.bak
 *.orig
+
+# SQLite databases and local data
+*.db
+data/
