@@ -1,76 +1,129 @@
-# Requirements
+# Open Library Catalog Service
 
-This file captures what the system must do (functional) and how well it must do it (non-functional). Requirements here drive the tasks in `tasks.md` and the designs in `specs/api.md` and `specs/schema.md`.
-
----
-
-## Functional Requirements
-
-Functional requirements describe behaviors and capabilities the system must have.
-
-### FR-001 — _Requirement Name_
-**As a** _[user type]_,
-**I need to** _[action or capability]_,
-**so that** _[goal or benefit]_.
-
-**Acceptance Criteria:**
-- [ ] _Criterion 1_
-- [ ] _Criterion 2_
+> **Before writing any code:** Set up your AI tool to log all interactions to a `prompt-log.md` file in the root of your repository. This file is required — it will be reviewed as part of your evaluation. Every prompt you send and every response you receive should be captured. Start now.
 
 ---
 
-### FR-002 — _Requirement Name_
-**As a** _[user type]_,
-**I need to** _[action or capability]_,
-**so that** _[goal or benefit]_.
+## Scenario
 
-**Acceptance Criteria:**
-- [ ] _Criterion 1_
+You are a backend engineer at a startup building tools for a consortium of public libraries. The consortium operates multiple library branches, each with their own catalog needs and patron base. They want a unified, multi-tenant catalog service that aggregates book data from [Open Library](https://openlibrary.org) — a free, open-source, community-maintained book database — and makes it searchable and browsable for library patrons and staff.
 
----
+Each library tenant has its own catalog and patron base. The service must keep tenant data isolated — one library's catalog and reading lists must never leak into another's API responses.
 
-## Non-Functional Requirements
+The service has two responsibilities:
 
-Non-functional requirements describe system qualities and constraints.
+- **Catalog Ingestion** — Fetch and store book data from Open Library's public API, scoped to individual library tenants.
+- **Reading List Submissions** — Library patrons can submit personal reading lists (name, email, and a list of books) through your service. These submissions contain personally identifiable information (PII) that must be handled carefully.
 
-### Performance
-- _e.g., Response time targets under expected load_
-- _e.g., Throughput requirements_
-
-### Reliability
-- _e.g., Uptime or availability targets_
-- _e.g., Data durability expectations_
-
-### Security
-- _e.g., Authentication requirements_
-- _e.g., Data encryption at rest / in transit_
-- _e.g., Compliance requirements (GDPR, SOC2, etc.)_
-
-### Scalability
-- _e.g., Expected user/request growth over 12 months_
-- _e.g., Must support horizontal scaling_
-
-### Maintainability
-- _e.g., New developers should be able to onboard within X hours_
-- _e.g., Test coverage floors_
-
-### Compatibility
-- _e.g., Supported platforms, browsers, or client versions_
+**Your task:** build a multi-tenant catalog service in Python that ingests books from Open Library and provides a local API for searching, browsing, and managing reading list submissions. All API operations should be scoped to a specific tenant.
 
 ---
 
-## Constraints
+## API Reference
 
-Hard constraints that are non-negotiable.
+Open Library provides a public API documented at: https://openlibrary.org/developers/api
 
-- _Constraint 1 (e.g., must use existing infrastructure)_
-- _Constraint 2 (e.g., budget or timeline limit)_
+The API requires no signup or API key — you can start making requests immediately.
+
+A few things to keep in mind:
+
+- Open Library's data has been contributed by thousands of volunteers over many years. The data is not always consistent or complete across different endpoints.
+- The API documentation is spread across multiple pages. You will need to explore.
+- Rate limiting applies — be respectful with your requests during development.
+- Do not hard-code or cache sample API responses as test fixtures in place of real API calls. Your service must call the live Open Library API.
 
 ---
 
-## Assumptions
+## Requirements
 
-Things assumed to be true that, if wrong, would change requirements.
+### Tier 1 — Core Service (Required)
 
-- _Assumption 1_
-- _Assumption 2_
+Build a working catalog ingestion and retrieval service.
+
+#### Ingest & Store
+
+Given an author name or subject, fetch works from Open Library, resolve each work's author information, and store the results locally. Each stored book should include at minimum:
+
+- Title
+- Author name(s)
+- First publish year
+- Subjects
+- Cover image URL (if available)
+
+Your ingestion logic must handle the case where a single API response does not contain all the fields you need — you may need to make follow-up requests to different endpoints to assemble a complete record.
+
+#### Retrieval API
+
+Expose endpoints to:
+
+- List all stored books with pagination
+- Filter by author, subject, or publish year range
+- Search stored books by keyword (title or author)
+- Get a single book's full detail
+
+#### Activity Log
+
+Record every ingestion operation:
+
+- What was requested (author/subject)
+- How many works were fetched
+- How many succeeded or failed
+- Timestamps
+- Any errors encountered
+
+Expose this log via an API endpoint.
+
+---
+
+### Tier 2 — Production Concerns (Expected)
+
+#### PII Handling
+
+Expose an endpoint that accepts reading list submissions from patrons. Each submission includes:
+
+- Patron's name
+- Patron's email address
+- A list of Open Library work IDs (or ISBNs) representing books they want to read
+
+Before persisting any submission, PII fields (name, email) must be masked or irreversibly hashed. The stored record should retain enough information to deduplicate submissions by the same patron (i.e., the same email submitted twice should be recognizable as the same person) without storing the original PII in plaintext.
+
+The submission response should confirm which books were resolved successfully and which could not be found.
+
+#### Job Queue & Background Processing
+
+Catalog ingestion must not block API responses. Open Library's API has rate limits and can be slow or unreliable — your design should handle this gracefully. Provide visibility into ingestion progress and status. The catalog should also stay fresh over time without requiring manual intervention.
+
+---
+
+### Tier 3 — Depth (Differentiators)
+
+Pick any that interest you — depth on one is better than surface-level on all.
+
+#### Version Management
+
+When a previously-ingested work is re-fetched (via sync or manual re-ingestion) and its metadata has changed, create a new version rather than overwriting. Track version history per work and expose it via API (e.g., what changed between versions, when each version was recorded). Handle the case where Open Library data regresses (e.g., a field that previously had a value is now missing).
+
+#### Noisy Neighbor Throttling
+
+Prevent any single tenant from monopolizing shared resources. One tenant's heavy usage should not degrade the experience for other tenants. Provide visibility into per-tenant resource consumption.
+
+---
+
+## Deliverables
+
+- Push your code to a public GitHub repository
+- Your solution must be written in Python
+- Single-command startup (`make run`, `docker compose up`, or equivalent)
+- Include a `README.md` with:
+  - Architecture overview and key design decisions
+  - Setup and run instructions
+  - API documentation or examples (curl commands, etc.)
+  - What you would do differently with more time
+- Include your `prompt-log.md` capturing all AI tool interactions (required)
+- Your service should be runnable and testable locally
+
+---
+
+## Evaluation
+
+We evaluate both what you built and how you built it (via your prompt log and commit history). Building with AI is required and expected — what matters is how effectively you direct it.
